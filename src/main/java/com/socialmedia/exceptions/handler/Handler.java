@@ -1,5 +1,7 @@
-package com.socialmedia.exceptions;
+package com.socialmedia.exceptions.handler;
 
+import com.socialmedia.exceptions.AuthenticationException;
+import com.socialmedia.exceptions.DataNotFoundException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -44,8 +46,8 @@ public class Handler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse handleAppError(final AuthenticationException e) {
-        log.info("500 {}", e.getMessage(), e);
+    public ErrorResponse handleAuthenticationException(final AuthenticationException e) {
+        log.info("401 {}", e.getMessage(), e);
         return new ErrorResponse("error", e.getMessage());
     }
 

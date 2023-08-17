@@ -1,6 +1,6 @@
 package com.socialmedia.config;
 
-import com.socialmedia.service.UserDetailsImpl;
+import com.socialmedia.service.impl.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

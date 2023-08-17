@@ -1,13 +1,19 @@
-package com.socialmedia.service;
+package com.socialmedia.service.impl;
 
+import com.socialmedia.dto.FriendDto;
 import com.socialmedia.dto.RegistrationDto;
 import com.socialmedia.dto.UserDto;
 import com.socialmedia.exceptions.DataNotFoundException;
+import com.socialmedia.mapper.FriendMapper;
 import com.socialmedia.mapper.UserMapper;
+import com.socialmedia.model.Friend;
+import com.socialmedia.model.Friendship;
 import com.socialmedia.model.Role;
 import com.socialmedia.model.User;
+import com.socialmedia.repository.FriendRepository;
 import com.socialmedia.repository.RoleRepository;
 import com.socialmedia.repository.UserRepository;
+import com.socialmedia.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +37,7 @@ public class UserDetailsImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final FriendRepository friendRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -73,5 +81,65 @@ public class UserDetailsImpl implements UserDetailsService, UserService {
         return UserMapper.mapToUserDto(user);
     }
 
+    @Override
+    public void addFriend(Long userId, Long friendId) {
+        if (userId.equals(friendId)) {
+            throw new DataNotFoundException("Нельзя подружиться самому с собой");
+        }
+        User submitter = checkUserId(userId);
+        checkUserId(friendId);
+        Friend friend = Friend.builder()
+                .friendId(friendId)
+                .status(Friendship.SUBSCRIBER)
+                .users(new ArrayList<>())
+                .build();
+        friend.getUsers().add(submitter);
+        friendRepository.save(friend);
+    }
 
+    @Override
+    public List<FriendDto> findAllFriends(Long userId) {
+        User user = checkUserId(userId);
+        return user.getFriends().stream()
+                .map(FriendMapper::mapToFriendDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public FriendDto approveFriend(Long approvingUserId, Long subscriberId, Boolean approved) {
+        User approvingUser = checkUserId(approvingUserId);
+        Friend subscriber = checkFriendId(subscriberId);
+        if (approved) {
+            subscriber.setStatus(Friendship.FRIEND);
+            Friend friend = Friend.builder()
+                    .friendId(subscriberId)
+                    .status(Friendship.FRIEND)
+                    .build();
+            subscriber.getUsers().add(approvingUser);
+            approvingUser.getFriends().add(subscriber);
+            userRepository.save(approvingUser);
+            friendRepository.save(friend);
+            friendRepository.save(subscriber);
+        }
+        return FriendMapper.mapToFriendDto(subscriber);
+    }
+
+    @Override
+    public void deleteFriend(Long userId, Long friendId) {
+        User submitter = checkUserId(userId);
+        Friend friend = checkFriendId(friendId);
+        friendRepository.deleteByFriendId(friendId);
+        submitter.getFriends().remove(friend);
+
+    }
+
+    private User checkUserId(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("Пользователь по id " +
+                userId + " не найден в базе данных"));
+    }
+
+    private Friend checkFriendId(Long friendId) {
+        return friendRepository.findById(friendId).orElseThrow(() -> new DataNotFoundException("Друг по id " +
+                friendId + " не найден в базе данных"));
+    }
 }

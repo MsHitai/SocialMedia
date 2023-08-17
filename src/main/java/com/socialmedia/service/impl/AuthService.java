@@ -1,4 +1,4 @@
-package com.socialmedia.service;
+package com.socialmedia.service.impl;
 
 import com.socialmedia.dto.JwtRequest;
 import com.socialmedia.dto.JwtResponse;

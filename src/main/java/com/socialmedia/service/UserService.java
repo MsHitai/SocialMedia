@@ -1,12 +1,13 @@
 package com.socialmedia.service;
 
+import com.socialmedia.dto.FriendDto;
 import com.socialmedia.dto.RegistrationDto;
 import com.socialmedia.dto.UserDto;
 import com.socialmedia.model.User;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     Optional<User> findByUsername(String username);
@@ -16,4 +17,12 @@ public interface UserService {
     List<UserDto> findAllUsers(Pageable page);
 
     UserDto findById(long userId);
+
+    void addFriend(Long userId, Long friendId);
+
+    List<FriendDto> findAllFriends(Long userId);
+
+    FriendDto approveFriend(Long userId, Long friendId, Boolean approved);
+
+    void deleteFriend(Long userId, Long friendId);
 }
