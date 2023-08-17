@@ -43,6 +43,7 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/users/**").hasRole("USER")
                                 .requestMatchers("/posts/**").hasRole("USER")
+                                .requestMatchers("/friends/**").hasRole("USER")
                                 .anyRequest().permitAll()
                                 .and()
                                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

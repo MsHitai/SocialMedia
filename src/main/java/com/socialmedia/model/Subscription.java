@@ -1,38 +1,33 @@
 package com.socialmedia.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@RequiredArgsConstructor
 @Entity
-@Table(name = "friends")
-public class Friend {
+@Table(name = "subscriptions")
+public class Subscription {
 
     @Id
-    @Column(name = "friend_id", nullable = false)
-    private Long friendId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "users_friends",
-            joinColumns = {@JoinColumn(name = "friend_id", referencedColumnName = "friend_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
-    )
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "publisher_id")
+    private User publisher;
 
-    @Enumerated
-    private Friendship status;
+    @ManyToOne
+    @JoinColumn(name = "subscriber_id")
+    private User subscriber;
 
     @Override
     public final boolean equals(Object o) {
@@ -43,8 +38,8 @@ public class Friend {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
                 ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Friend friend = (Friend) o;
-        return getFriendId() != null && Objects.equals(getFriendId(), friend.getFriendId());
+        Subscription that = (Subscription) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override

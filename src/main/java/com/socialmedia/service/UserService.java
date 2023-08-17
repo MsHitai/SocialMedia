@@ -1,6 +1,5 @@
 package com.socialmedia.service;
 
-import com.socialmedia.dto.FriendDto;
 import com.socialmedia.dto.RegistrationDto;
 import com.socialmedia.dto.UserDto;
 import com.socialmedia.model.User;
@@ -18,11 +17,4 @@ public interface UserService {
 
     UserDto findById(long userId);
 
-    void addFriend(Long userId, Long friendId);
-
-    List<FriendDto> findAllFriends(Long userId);
-
-    FriendDto approveFriend(Long userId, Long friendId, Boolean approved);
-
-    void deleteFriend(Long userId, Long friendId);
 }

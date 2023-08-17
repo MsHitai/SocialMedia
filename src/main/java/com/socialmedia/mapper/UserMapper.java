@@ -27,13 +27,4 @@ public class UserMapper {
                 .roles(roles)
                 .build();
     }
-
-    public User mapToUserFromUserDto(UserDto userDto, String password, List<Role> roles) {
-        return User.builder()
-                .username(userDto.getUsername())
-                .email(userDto.getEmail())
-                .password(password)
-                .roles(roles)
-                .build();
-    }
 }

@@ -2,6 +2,7 @@ package com.socialmedia.exceptions.handler;
 
 import com.socialmedia.exceptions.AuthenticationException;
 import com.socialmedia.exceptions.DataNotFoundException;
+import com.socialmedia.exceptions.FriendException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +20,13 @@ public class Handler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final ValidationException e) {
+        log.info("400 {}", e.getMessage(), e);
+        return new ErrorResponse("error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleFriendException(final FriendException e) {
         log.info("400 {}", e.getMessage(), e);
         return new ErrorResponse("error", e.getMessage());
     }
