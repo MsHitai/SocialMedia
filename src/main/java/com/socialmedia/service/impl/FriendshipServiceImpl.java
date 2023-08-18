@@ -75,6 +75,11 @@ public class FriendshipServiceImpl implements FriendshipService {
                     " не найдена в базе данных");
         }
 
+        if (friendship.getStatus().equals(Status.APPROVED)) {
+            throw new FriendException("Дружба между пользователем по id " + receiverId + " и " + requestSenderId +
+                    " уже одобрена");
+        }
+
         if (approved) {
             friendship.setStatus(Status.APPROVED);
             friendshipRepository.save(friendship);
@@ -102,7 +107,7 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         Friendship friendship = friendshipRepository.findBySenderAndReceiver(sender, receiver);
 
-        if (friendship == null) {
+        if (friendship == null || friendship.getStatus().equals(Status.PENDING)) {
             subscriptionRepository.deleteBySubscriberAndPublisher(sender, receiver);
         } else {
             friendshipRepository.deleteBySenderAndReceiver(sender, receiver);

@@ -73,4 +73,18 @@ public class UserDetailsImpl implements UserDetailsService, UserService {
                 DataNotFoundException(String.format("Пользователь по id '%d' не найден", userId)));
         return UserMapper.mapToUserDto(user);
     }
+
+    @Override
+    public UserDto updateUser(Long userId, RegistrationDto registrationDto) {
+        checkUserId(userId);
+        String password = passwordEncoder.encode(registrationDto.getPassword());
+        List<Role> roles = List.of(roleRepository.findByName("ROLE_USER"));
+        User user = UserMapper.mapToUser(registrationDto, password, roles);
+        return UserMapper.mapToUserDto(userRepository.save(user));
+    }
+
+    private void checkUserId(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("Пользователь по id " +
+                userId + " не найден в базе данных"));
+    }
 }

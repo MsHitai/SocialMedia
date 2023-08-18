@@ -44,6 +44,8 @@ public class SecurityConfig {
                                 .requestMatchers("/users/**").hasRole("USER")
                                 .requestMatchers("/posts/**").hasRole("USER")
                                 .requestMatchers("/friends/**").hasRole("USER")
+                                .requestMatchers("/subs/**").hasRole("USER")
+                                .requestMatchers("/messages/**").hasRole("USER")
                                 .anyRequest().permitAll()
                                 .and()
                                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

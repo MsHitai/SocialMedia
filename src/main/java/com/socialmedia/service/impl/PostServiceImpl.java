@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -47,6 +48,7 @@ public class PostServiceImpl implements PostService {
         post.setHeader(file.getName());
         post.setDescription(description);
         post.setImage(file.getBytes());
+        post.setCreated(LocalDateTime.now());
         return PostMapper.mapToPostDto(postRepository.save(post));
     }
 
@@ -58,6 +60,7 @@ public class PostServiceImpl implements PostService {
         post.setHeader(file.getName());
         post.setDescription(description);
         post.setImage(file.getBytes());
+        post.setCreated(LocalDateTime.now());
         return PostMapper.mapToPostDto(postRepository.save(post));
     }
 

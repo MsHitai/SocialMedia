@@ -44,8 +44,8 @@ public class User {
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "friendships",
-            joinColumns = @JoinColumn(name = "user_first"),
-            inverseJoinColumns = @JoinColumn(name = "user_second"))
+            joinColumns = @JoinColumn(name = "sender"),
+            inverseJoinColumns = @JoinColumn(name = "receiver"))
     @ToString.Exclude
     private Set<User> friends = new HashSet<>();
 

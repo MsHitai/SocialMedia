@@ -1,21 +1,20 @@
 package com.socialmedia.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "friendships")
-public class Friendship {
+@Table(name = "messages")
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +27,10 @@ public class Friendship {
     @ManyToOne
     @JoinColumn(name = "receiver")
     private User receiver;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column(name = "content", nullable = false)
+    private String content;
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created;
 
     @Override
     public final boolean equals(Object o) {
@@ -41,8 +41,8 @@ public class Friendship {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
                 ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Friendship that = (Friendship) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        Message message = (Message) o;
+        return getId() != null && Objects.equals(getId(), message.getId());
     }
 
     @Override

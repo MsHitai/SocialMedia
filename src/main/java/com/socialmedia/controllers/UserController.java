@@ -1,7 +1,10 @@
 package com.socialmedia.controllers;
 
+import com.socialmedia.dto.RegistrationDto;
 import com.socialmedia.dto.UserDto;
+import com.socialmedia.exceptions.AuthenticationException;
 import com.socialmedia.service.UserService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +42,11 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public UserDto updateUser(@RequestHeader("X-SMedia-User-Id") Long id,
-                              @PathVariable Long userId) {
-        return null; // todo implement
+    public UserDto updateUser(@PathVariable Long userId, @Valid RegistrationDto registrationUserDto) {
+        log.info("Получен запрос Put на обновление пользователя по id {}", userId);
+        if (!userId.equals(registrationUserDto.getId())) {
+            throw new AuthenticationException("Неверно указан id пользователя = " + registrationUserDto.getId());
+        }
+        return userService.updateUser(userId, registrationUserDto);
     }
 }

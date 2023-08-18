@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -30,7 +31,11 @@ public class Post {
     @Column(name = "image", length = 1000)
     private byte[] image;
 
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
     @ToString.Exclude
     private User author;
 

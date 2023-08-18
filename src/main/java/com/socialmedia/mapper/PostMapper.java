@@ -15,6 +15,7 @@ public class PostMapper {
                 .header(postDto.getHeader())
                 .description(postDto.getDescription())
                 .author(user)
+                .created(postDto.getCreated())
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class PostMapper {
                 .header(post.getHeader())
                 .description(post.getDescription())
                 .image(post.getImage())
+                .created(post.getCreated())
                 .authorId(post.getAuthor().getId())
                 .build();
     }
