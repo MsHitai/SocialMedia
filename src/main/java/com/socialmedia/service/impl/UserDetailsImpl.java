@@ -62,7 +62,7 @@ public class UserDetailsImpl implements UserDetailsService, UserService {
 
     @Override
     public List<UserDto> findAllUsers(Pageable page) {
-        return userRepository.findAll()
+        return userRepository.findAll(page)
                 .stream()
                 .map(UserMapper::mapToUserDto)
                 .collect(Collectors.toList());

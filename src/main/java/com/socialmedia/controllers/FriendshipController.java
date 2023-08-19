@@ -37,8 +37,8 @@ public class FriendshipController {
 
     @PutMapping()
     public FriendshipDto approveFriendship(@RequestHeader("X-SMedia-User-Id") Long receiverId,
-                                           @RequestParam Long requestSenderId,
-                                           @RequestParam Boolean approved) {
+                                           @RequestParam(name = "senderId") Long requestSenderId,
+                                           @RequestParam(name = "approved") Boolean approved) {
         log.info("Получен запрос PUT на одобрения друга по id {}", requestSenderId);
         return friendshipService.approveFriendship(receiverId, requestSenderId, approved);
     }

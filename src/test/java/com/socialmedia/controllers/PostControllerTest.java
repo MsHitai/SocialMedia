@@ -1,8 +1,6 @@
 package com.socialmedia.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.socialmedia.dto.PostDto;
-import com.socialmedia.model.Post;
 import com.socialmedia.model.Role;
 import com.socialmedia.model.User;
 import com.socialmedia.service.PostService;
@@ -30,9 +28,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,19 +45,16 @@ class PostControllerTest {
     @MockBean
     private PostService postService;
 
-    @Autowired
-    private ObjectMapper mapper;
-
     @MockBean
     private JwtTokenUtils jwtTokenUtils;
 
-    private Post post;
     private PostDto dto;
 
     private User publisher;
     private Long postId;
 
-    private final LocalDateTime created = LocalDateTime.of(2023, Month.AUGUST, 19, 9, 10, 1);
+    private final LocalDateTime created =
+            LocalDateTime.of(2023, Month.AUGUST, 19, 9, 10, 1);
 
     private Pageable page;
 
@@ -90,14 +84,6 @@ class PostControllerTest {
                 .created(created)
                 .header("header")
                 .description("description")
-                .build();
-
-        post = Post.builder()
-                .id(postId)
-                .author(publisher)
-                .created(created)
-                .header(dto.getHeader())
-                .description(dto.getDescription())
                 .build();
     }
 
@@ -164,10 +150,33 @@ class PostControllerTest {
     @Test
     @WithMockUser
     void updatePost() throws Exception {
+        dto.setDescription("newDescription");
+        dto.setHeader("newHeader");
+        when(postService.updatePost(publisher.getId(), postId, null, "newDescription", "newHeader"))
+                .thenReturn(dto);
+
+        mvc.perform(put("/posts/" + postId)
+                        .header("X-SMedia-User-Id", publisher.getId())
+                        .param("header", "newHeader")
+                        .param("description", "newDescription")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(dto.getId()), Long.class))
+                .andExpect(jsonPath("$.authorId", is(publisher.getId()), Long.class))
+                .andExpect(jsonPath("$.header", is(dto.getHeader())))
+                .andExpect(jsonPath("$.description", is(dto.getDescription())))
+                .andExpect(jsonPath("$.created", is(dto.getCreated().toString())));
     }
 
     @Test
     @WithMockUser
     void deletePost() throws Exception {
+        mvc.perform(delete("/posts/" + postId)
+                        .header("X-SMedia-User-Id", publisher.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(postService, times(1))
+                .deletePost(publisher.getId(), postId);
     }
 }

@@ -53,10 +53,11 @@ public class PostController {
     @PutMapping("/{postId}")
     public PostDto updatePost(@RequestHeader("X-SMedia-User-Id") Long userId,
                               @PathVariable() Long postId,
-                              @RequestPart("image") MultipartFile file,
+                              @RequestPart(required = false, name = "image") MultipartFile file,
+                              @RequestParam("header") String header,
                               @RequestParam("description") String description) throws IOException {
         log.info("Получен запрос PUT на обновление поста по id {} от пользователя по id {}", postId, userId);
-        return postService.updatePost(userId, postId, file, description);
+        return postService.updatePost(userId, postId, file, description, header);
     }
 
     @DeleteMapping("/{postId}")

@@ -23,7 +23,7 @@ public class MessageController {
 
     @GetMapping()
     public List<MessageDto> findAllMessages(@RequestHeader("X-SMedia-User-Id") Long userId,
-                                            @RequestParam Long friendId) {
+                                            @RequestParam(name = "friendId") Long friendId) {
         log.info("Поступил запрос GET на вывод всех сообщений пользователя по id {} c пользователем по id {}", userId,
                 friendId);
         return messageService.findAllMessages(userId, friendId);
