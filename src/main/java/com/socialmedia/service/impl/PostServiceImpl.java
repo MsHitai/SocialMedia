@@ -41,13 +41,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto addPost(Long userId, MultipartFile file, String description) throws IOException {
+    public PostDto addPost(Long userId, MultipartFile file, String description, String header) throws IOException {
         Post post = new Post();
         User user = checkUserId(userId);
         post.setAuthor(user);
-        post.setHeader(file.getName());
+        post.setHeader(header);
         post.setDescription(description);
-        post.setImage(file.getBytes());
+        if (file != null) {
+            post.setImage(file.getBytes());
+        }
         post.setCreated(LocalDateTime.now());
         return PostMapper.mapToPostDto(postRepository.save(post));
     }

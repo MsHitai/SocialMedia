@@ -43,10 +43,11 @@ public class PostController {
 
     @PostMapping()
     public PostDto addPost(@RequestHeader("X-SMedia-User-Id") Long userId,
-                           @RequestPart("image") MultipartFile file,
+                           @RequestPart(required = false, name = "image") MultipartFile file,
+                           @RequestParam("header") String header,
                            @RequestParam("description") String description) throws IOException {
         log.info("Получен запрос POST на добавление поста от пользователя по id {}", userId);
-        return postService.addPost(userId, file, description);
+        return postService.addPost(userId, file, description, header);
     }
 
     @PutMapping("/{postId}")

@@ -10,7 +10,7 @@ import java.util.List;
 public interface PostService {
     List<PostDto> findAllPosts(Pageable page);
 
-    PostDto addPost(Long userId, MultipartFile file, String description) throws IOException;
+    PostDto addPost(Long userId, MultipartFile file, String description, String header) throws IOException;
 
     PostDto updatePost(Long userId, Long postId, MultipartFile file, String description) throws IOException;
 

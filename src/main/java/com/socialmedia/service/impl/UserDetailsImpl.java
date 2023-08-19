@@ -2,6 +2,7 @@ package com.socialmedia.service.impl;
 
 import com.socialmedia.dto.RegistrationDto;
 import com.socialmedia.dto.UserDto;
+import com.socialmedia.exceptions.AuthenticationException;
 import com.socialmedia.exceptions.DataNotFoundException;
 import com.socialmedia.mapper.UserMapper;
 import com.socialmedia.model.Role;
@@ -75,16 +76,20 @@ public class UserDetailsImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDto updateUser(Long userId, RegistrationDto registrationDto) {
-        checkUserId(userId);
-        String password = passwordEncoder.encode(registrationDto.getPassword());
-        List<Role> roles = List.of(roleRepository.findByName("ROLE_USER"));
-        User user = UserMapper.mapToUser(registrationDto, password, roles);
+    public UserDto updateUser(Long userId, String currentUsername, RegistrationDto dto) {
+        User user = checkUserId(userId);
+        if (!user.getUsername().equals(currentUsername)) {
+            throw new AuthenticationException("Неверное имя пользователя");
+        }
+        String password = passwordEncoder.encode(dto.getPassword());
+        user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        user.setPassword(password);
         return UserMapper.mapToUserDto(userRepository.save(user));
     }
 
-    private void checkUserId(Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("Пользователь по id " +
+    private User checkUserId(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("Пользователь по id " +
                 userId + " не найден в базе данных"));
     }
 }

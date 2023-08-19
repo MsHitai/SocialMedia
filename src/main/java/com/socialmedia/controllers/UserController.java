@@ -2,7 +2,6 @@ package com.socialmedia.controllers;
 
 import com.socialmedia.dto.RegistrationDto;
 import com.socialmedia.dto.UserDto;
-import com.socialmedia.exceptions.AuthenticationException;
 import com.socialmedia.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -11,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,11 +43,10 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public UserDto updateUser(@PathVariable Long userId, @Valid RegistrationDto registrationUserDto) {
+    public UserDto updateUser(@PathVariable Long userId, @Valid @RequestBody RegistrationDto dto) {
         log.info("Получен запрос Put на обновление пользователя по id {}", userId);
-        if (!userId.equals(registrationUserDto.getId())) {
-            throw new AuthenticationException("Неверно указан id пользователя = " + registrationUserDto.getId());
-        }
-        return userService.updateUser(userId, registrationUserDto);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        return userService.updateUser(userId, currentUsername, dto);
     }
 }

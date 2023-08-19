@@ -17,6 +17,6 @@ public interface UserService {
 
     UserDto findById(long userId);
 
-    UserDto updateUser(Long userId, RegistrationDto userDto);
+    UserDto updateUser(Long userId, String currentUsername, RegistrationDto dto);
 
 }
