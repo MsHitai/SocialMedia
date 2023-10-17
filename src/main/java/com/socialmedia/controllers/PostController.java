@@ -30,7 +30,7 @@ public class PostController {
     public List<PostDto> findAllPosts(@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                       @Positive @RequestParam(name = "size", defaultValue = "20") Integer size) {
         log.info("Получен запрос GET на вывод всех постов");
-        Pageable page = PageRequest.of(from, size);
+        Pageable page = PageRequest.of(from / size, size);
         return postService.findAllPosts(page);
     }
 

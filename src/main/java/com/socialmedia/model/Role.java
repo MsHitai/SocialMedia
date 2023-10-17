@@ -24,13 +24,14 @@ public class Role {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER,
+    @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "users_roles",
             joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
     )
+    @ToString.Exclude
     private List<User> users = new ArrayList<>();
 
     @Override

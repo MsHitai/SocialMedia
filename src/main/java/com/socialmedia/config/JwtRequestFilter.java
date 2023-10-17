@@ -36,11 +36,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtils.getUsername(jwt);
             } catch (ExpiredJwtException e) {
-                log.info("Время жизни токена вышло " + jwt);
+                log.info("Время жизни токена вышло " + jwt.substring(jwt.length() / 2));
                 handleAuthenticationException(response, "TOKEN_EXPIRED", "Token expired");
                 return;
             } catch (SignatureException e) {
-                log.info("Подпись неправильная " + jwt);
+                log.info("Подпись неправильная " + jwt.substring(jwt.length() / 2));
                 handleAuthenticationException(response, "INVALID_SIGNATURE", "Invalid token signature");
                 return;
             }

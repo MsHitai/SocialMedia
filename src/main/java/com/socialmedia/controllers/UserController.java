@@ -43,6 +43,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public UserDto updateUser(@PathVariable Long userId, @Valid @RequestBody RegistrationDto dto) {
         log.info("Получен запрос Put на обновление пользователя по id {}", userId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
